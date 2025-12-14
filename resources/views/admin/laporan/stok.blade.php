@@ -41,11 +41,11 @@
     <div class="card">
         <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Laporan Stok Barang</h5>
-            <div>
+            <!-- <div>
                 <button class="btn btn-light btn-sm" onclick="window.print()">
                     <i class="fas fa-print"></i> Print
                 </button>
-            </div>
+            </div> -->
         </div>
         <div class="card-body">
             <!-- Summary Cards -->

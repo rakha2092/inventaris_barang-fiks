@@ -27,9 +27,8 @@
 
 @section('content')
     <div class="card">
-        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
-            <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Stok Rendah</h5>
-            <button class="btn btn-dark btn-sm" onclick="window.print()"><i class="fas fa-print"></i></button>
+        <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i> Stok Rendah</h5>
         </div>
         <div class="card-body">
             @if(session('success'))
@@ -41,7 +40,7 @@
 
             @if($barangs->count() > 0)
                 <div class="alert alert-warning">
-                    <i class="fas fa-info-circle"></i>
+                    <i class="fas fa-info-circle me-2"></i>
                     <strong>Peringatan!</strong> {{ $barangs->count() }} barang perlu restock.
                 </div>
 
@@ -56,7 +55,7 @@
                                 <th>Lokasi</th>
                                 <th>Stok</th>
                                 <th>Min</th>
-                                <th>Kurang</th>
+                                <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -78,17 +77,27 @@
                                     <td>{{ $item->stok_minimum }}</td>
                                     <td>
                                         @php $kurang = $item->stok_minimum - $item->stok; @endphp
-                                        @if($kurang > 0)<span class="badge bg-danger">{{ $kurang }}</span>
-                                        @else<span class="badge bg-success">Cukup</span>@endif
+                                        @if($item->stok == 0)
+                                            <span class="badge bg-danger">Habis</span>
+                                        @elseif($kurang > 0)
+                                            <span class="badge bg-warning">Kurang {{ $kurang }}</span>
+                                        @else
+                                            <span class="badge bg-success">Cukup</span>
+                                        @endif
                                     </td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
-                                            <a href="{{ url('/admin/barang/' . $item->id) }}" class="btn btn-info" title="Detail"><i
-                                                    class="fas fa-eye"></i></a>
+                                            <a href="{{ url('/admin/barang/' . $item->id) }}" class="btn btn-info" title="Detail" data-bs-toggle="tooltip">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
                                             <a href="{{ url('/admin/barang/' . $item->id . '/restock') }}" class="btn btn-success"
-                                                title="Restock"><i class="fas fa-plus"></i></a>
+                                                title="Restock" data-bs-toggle="tooltip">
+                                                <i class="fas fa-plus"></i>
+                                            </a>
                                             <a href="{{ url('/admin/barang/' . $item->id . '/edit') }}" class="btn btn-warning"
-                                                title="Edit"><i class="fas fa-edit"></i></a>
+                                                title="Edit" data-bs-toggle="tooltip">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>
@@ -98,55 +107,48 @@
                 </div>
 
                 <div class="row mt-4">
-                    <div class="col-md-3">
-                        <div class="card bg-danger text-white">
-                            <div class="card-body text-center py-2">
-                                <h6 class="mb-0">Habis</h6>
-                                <h4 class="mb-0">{{ $barangs->where('stok', 0)->count() }}</h4>
-                            </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="stat-card bg-danger">
+                            <h6 class="mb-2"><i class="fas fa-times-circle"></i> Habis</h6>
+                            <h4 class="mb-0">{{ $barangs->where('stok', 0)->count() }}</h4>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="card bg-warning text-white">
-                            <div class="card-body text-center py-2">
-                                <h6 class="mb-0">Rendah</h6>
-                                <h4 class="mb-0">{{ $barangs->where('stok', '>', 0)->where('stok', '<', 3)->count() }}</h4>
-                            </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="stat-card bg-warning">
+                            <h6 class="mb-2"><i class="fas fa-exclamation-triangle"></i> Rendah</h6>
+                            <h4 class="mb-0">{{ $barangs->where('stok', '>', 0)->where('stok', '<', 3)->count() }}</h4>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="card bg-info text-white">
-                            <div class="card-body text-center py-2">
-                                <h6 class="mb-0">Total</h6>
-                                <h4 class="mb-0">{{ $barangs->count() }}</h4>
-                            </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="stat-card bg-info">
+                            <h6 class="mb-2"><i class="fas fa-boxes"></i> Total</h6>
+                            <h4 class="mb-0">{{ $barangs->count() }}</h4>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="card bg-primary text-white">
-                            <div class="card-body text-center py-2">
-                                <h6 class="mb-0">Restock</h6>
-                                <h4 class="mb-0">{{ $barangs->count() }}</h4>
-                            </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="stat-card bg-primary">
+                            <h6 class="mb-2"><i class="fas fa-sync-alt"></i> Restock</h6>
+                            <h4 class="mb-0">{{ $barangs->count() }}</h4>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-4 p-3 bg-light rounded">
-                    <h6><i class="fas fa-lightbulb"></i> Saran:</h6>
-                    <ul class="mb-0">
-                        <li>Prioritaskan barang habis dulu</li>
-                        <li>Gunakan fitur restock</li>
-                        <li>Buat rencana pembelian</li>
+                <div class="mt-4 p-4 bg-light rounded">
+                    <h6><i class="fas fa-lightbulb me-2"></i> Saran:</h6>
+                    <ul class="mb-0 ps-3">
+                        <li>Prioritaskan barang habis terlebih dahulu</li>
+                        <li>Gunakan fitur restock untuk menambah stok</li>
+                        <li>Buat rencana pembelian untuk barang yang sering habis</li>
+                        <li>Periksa stok minimum secara berkala</li>
                     </ul>
                 </div>
             @else
-                <div class="text-center py-4">
-                    <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
-                    <h5>Stok aman semua</h5>
-                    <p class="text-muted">Tidak ada barang perlu restock</p>
+                <div class="text-center py-5">
+                    <i class="fas fa-check-circle fa-4x text-success mb-4"></i>
+                    <h4 class="mb-3">Stok aman semua!</h4>
+                    <p class="text-muted mb-4">Tidak ada barang yang perlu direstock saat ini.</p>
                     <a href="{{ url('/admin/laporan/stok') }}" class="btn btn-primary">
-                        <i class="fas fa-chart-bar"></i> Lihat Stok
+                        <i class="fas fa-chart-bar me-2"></i> Lihat Laporan Stok Lengkap
                     </a>
                 </div>
             @endif
@@ -157,9 +159,15 @@
 @section('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var tips = [].slice.call(document.querySelectorAll('[title]'))
-            tips.map(function (el) {
-                return new bootstrap.Tooltip(el)
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+            
+            // Print functionality
+            document.getElementById('printBtn')?.addEventListener('click', function() {
+                window.print();
             });
         });
     </script>

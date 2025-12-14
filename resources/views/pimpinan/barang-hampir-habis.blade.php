@@ -29,12 +29,12 @@
 
 @section('content')
 <div class="card">
-    <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+    <!-- <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
         <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Daftar Barang dengan Stok Rendah</h5>
         <button class="btn btn-dark btn-sm" onclick="window.print()">
             <i class="fas fa-print"></i> Print
         </button>
-    </div>
+    </div> -->
     <div class="card-body">
         @if($barangRendah->count() > 0)
         <div class="alert alert-warning">
